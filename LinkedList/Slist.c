@@ -39,6 +39,7 @@ void SListPushBack(SLTNode**phead,SLTDataType x)
 
     }
 }
+
 void SListPushFront(SLTNode**phead,SLTDataType x)
 {
     SLTNode * newnode = BuyListNode(x);
@@ -106,7 +107,7 @@ void SListInsert(SLTNode**pphead,SLTNode*pos,SLTDataType x)
     newnode->next = pos;
 
 }
-
+//单链表适合在pos后边插 效率有很大差距  这也是单链表天生的缺陷 此时就要用到双向链表 这个网址怎么进入？
 void SListErase(SLTNode**pphead,SLTNode*pos)
 {
     //pos位于头的时候 相当于头删
@@ -125,6 +126,7 @@ void SListErase(SLTNode**pphead,SLTNode*pos)
 
 void SListDestroy(SLTNode**pphead)
 {
+    if(pphead == NULL)return;
     SLTNode*tail = *pphead;
     while(tail!=NULL)
     {
@@ -133,6 +135,5 @@ void SListDestroy(SLTNode**pphead)
         free(temp);
     }
     *pphead = NULL;
-
 
 }

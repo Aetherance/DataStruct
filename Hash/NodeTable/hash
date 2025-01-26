@@ -1,48 +1,100 @@
 #include<iostream>
-#include<vector>
-#include<list>
 using namespace std;
 
-class HashTable {
-public:
-    HashTable(int);
-    int hash(int);
-    void insert(int);
-    void remove(int);
-    int find(int);
-    bool empty();
-    size_t size();
-
-private:
-    vector<list<int>>data;
+struct Hnode
+{
+    Hnode(int,int);
+    int key;
+    int val;
+    Hnode * next;
 };
 
-HashTable::HashTable(int len) {
-    vector<list<int>>initializer(len,list(1,0));
-    data = initializer;
+Hnode::Hnode(int key,int val) {
+    next = nullptr;
+    this->key = key;
+    this->val = val;
 }
 
-int HashTable::hash(int value) {
-    return value % (data.size()-1);
+class hashtable
+{
+public:
+    hashtable(int);
+    ~hashtable();
+    Hnode* GetKeyNode(int);
+    int GetValue(int);
+    void Insert(int,int);
+    int operator[](int);
+private:
+    Hnode**data;
+    int HashNum;
+    int Size;
+    int hash(int);
+};
+
+hashtable::hashtable(int Size) {
+    data = new Hnode*[Size]();
+    HashNum = Size;
+    this->Size = Size;
 }
 
-void HashTable::insert(int value) {
-    data[hash(value)].push_back(value);
+hashtable::~hashtable() {
+    for(int i = 0;i<Size;i++) {
+        Hnode *target = data[i];
+        if(target == nullptr) {
+            continue;
+        }
+        while (target) {
+            Hnode * temp = target;
+            target = target->next;
+            delete temp;
+        }
+    }
+    delete[] data;
 }
 
-void HashTable::remove(int value) {
-    list<int>& cur = data[hash(value)];
-    cur.remove(value);
+int hashtable::hash(int key) {
+    return key % HashNum;
 }
 
-int HashTable::find(int value) {
-    return hash(value);
+Hnode*hashtable::GetKeyNode(int key) {
+    Hnode * target = data[hash(key)];
+    if(target == nullptr) {
+        return nullptr;
+    }
+    while (target->next!=nullptr&&target->key!=key) {
+        target = target->next;
+    }
+    return target->key == key ? target : nullptr;
 }
 
-bool HashTable::empty() {
-    return data.size() ? false : true;
+int hashtable::GetValue(int key) {
+    Hnode * keyNode = GetKeyNode(key);
+    return keyNode ? keyNode->val : -1;
 }
 
-size_t HashTable::size() {
-    return data.size();
+Hnode * BuyNewnode(int key,int val) {
+    return new Hnode(key,val);
+}
+
+void hashtable::Insert(int key,int val) {
+    Hnode * key_node;
+    if(key_node = GetKeyNode(key)) {
+        key_node->key = key;
+        key_node->val = val;
+        return;
+    }
+    key_node = data[hash(key)];
+    Hnode * newnode = BuyNewnode(key,val);
+    if(key_node==nullptr) {
+        data[hash(key)] = newnode;
+        return;
+    }
+    while (key_node->next) {
+        key_node = key_node->next;
+    }
+    key_node->next = newnode;
+}
+
+int hashtable::operator[](int key){
+    return GetValue(key);
 }

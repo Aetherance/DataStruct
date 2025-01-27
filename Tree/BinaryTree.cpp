@@ -68,8 +68,8 @@ int main() {
 //      10
 //     /  \
 //    5   256
-//   /    /
-//  123  345
+//   /    / \
+//  123 345 250
 
 
     Node * root = new Node(10);
@@ -77,6 +77,7 @@ int main() {
     root->right = new Node(256);
     root->left->left = new Node(123);
     root->right->left = new Node(345);
+    root->right->right = new Node(250);
 
     PreOrderTraversal(root);
     cout<<endl;

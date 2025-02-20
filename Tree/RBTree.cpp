@@ -1,71 +1,85 @@
 #include<iostream>
 using namespace std;
 
-#define RED 0
-#define BLACK 1
-
-struct Node
-{
-    int val;
-    bool color;
-    Node * left;
-    Node * right;
-    Node * parent;
-    Node(int);
-    Node(int,Node *);
+enum Color {
+    RED,
+    BLACK
 };
 
-Node::Node(int val) {
-    color = RED;
-    this->val = val;
-    left = nullptr;
-    right = nullptr;
-    parent = nullptr;
+struct Node {
+    int data;
+    bool color;
+    Node *left,*right,*parent;
+    Node(int data);
+};
+
+Node::Node(int data) {
+    this->data = data;
+    this->color = RED;
+    this->left = this->parent = this->right = nullptr;    
 }
 
-Node::Node(int val,Node *parent) {
-    color = RED;
-    this->val = val;
-    left = nullptr;
-    right = nullptr;
-    this->parent = parent;
-}
+class RBTree 
+{
+public:
+    RBTree();
+    ~RBTree();
+    Node * get();
+    void InOrder(Node *);
+    void Insert(Node *,int);
+    void InsertFix();
 
-void nilInit(Node * nil) {
+private:
+    Node * root;
+    Node * nil;
+};
+
+RBTree::RBTree(){
+    nil = new Node(-1);
     nil->color = BLACK;
     nil->left = nullptr;
-    nil->right = nullptr;
     nil->parent = nullptr;
-    nil->val = -1;
+    nil->right = nullptr;
+    root = nil;
 }
 
-void InOrder(Node * root) {
-    if(root == nullptr) {
+RBTree::~RBTree(){
+    delete nil;
+}
+
+Node *RBTree::get() {
+    return root;
+}
+
+void RBTree::InOrder(Node * node) {
+    if(node == nil) {
         return;
     }
-
-    InOrder(root->left);
-    cout<<root->val;
-    InOrder(root->right);
+    InOrder(node->left);
+    cout<<node->data<<endl;
+    InOrder(node->right);
 }
 
+void RBTree::Insert(Node * node,int val) {
+    if(val == node->data) {
+        return;
+    } else if(val > node->data) {
+        Insert(node->right,val);
+    } else if(val < node->data) {
+        Insert(node->left,val);
+    }
+    
 
-void LeftRotate(Node ** root) {
-    Node * new_root = (*root)->right;
-    Node * T = new_root->left;
+}
 
-    new_root->left = *root;
-    (*root)->right = T;
-
+void RBTree::InsertFix() {
 
 }
 
 int main() {
-    Node * nil;
-    nilInit(nil);
+    RBTree tree;
+    Node * root = tree.get();
 
-    Node * root;
-
-
+    tree.InOrder(root);
     return 0;
 }

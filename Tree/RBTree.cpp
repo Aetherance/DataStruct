@@ -80,6 +80,7 @@ int main() {
     RBTree tree;
     Node * root = tree.get();
 
+
     tree.InOrder(root);
     return 0;
 }
